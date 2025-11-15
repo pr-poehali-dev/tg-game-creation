@@ -13,30 +13,43 @@ interface Upgrade {
   icon: string;
 }
 
+let audioContext: AudioContext | null = null;
+
+const getAudioContext = () => {
+  if (!audioContext) {
+    audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+  }
+  return audioContext;
+};
+
+const playSound = (frequency: number, duration: number = 100) => {
+  try {
+    const ctx = getAudioContext();
+    const oscillator = ctx.createOscillator();
+    const gainNode = ctx.createGain();
+    
+    oscillator.connect(gainNode);
+    gainNode.connect(ctx.destination);
+    
+    oscillator.frequency.value = frequency;
+    oscillator.type = 'square';
+    
+    gainNode.gain.setValueAtTime(0.1, ctx.currentTime);
+    gainNode.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + duration / 1000);
+    
+    oscillator.start(ctx.currentTime);
+    oscillator.stop(ctx.currentTime + duration / 1000);
+  } catch (e) {
+    console.warn('Audio playback failed:', e);
+  }
+};
+
 export default function Index() {
   const [energy, setEnergy] = useState(0);
   const [totalEnergy, setTotalEnergy] = useState(0);
   const [energyPerClick, setEnergyPerClick] = useState(1);
   const [energyPerSecond, setEnergyPerSecond] = useState(0);
   const [clicks, setClicks] = useState(0);
-
-  const playSound = (frequency: number, duration: number = 100) => {
-    const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
-    const oscillator = audioContext.createOscillator();
-    const gainNode = audioContext.createGain();
-    
-    oscillator.connect(gainNode);
-    gainNode.connect(audioContext.destination);
-    
-    oscillator.frequency.value = frequency;
-    oscillator.type = 'square';
-    
-    gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
-    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + duration / 1000);
-    
-    oscillator.start(audioContext.currentTime);
-    oscillator.stop(audioContext.currentTime + duration / 1000);
-  };
 
   const [upgrades, setUpgrades] = useState<Upgrade[]>([
     { id: 'click', name: 'REACTOR BOOST', cost: 10, power: 1, owned: 0, icon: 'Zap' },
