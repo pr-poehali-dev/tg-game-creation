@@ -20,6 +20,24 @@ export default function Index() {
   const [energyPerSecond, setEnergyPerSecond] = useState(0);
   const [clicks, setClicks] = useState(0);
 
+  const playSound = (frequency: number, duration: number = 100) => {
+    const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+    const oscillator = audioContext.createOscillator();
+    const gainNode = audioContext.createGain();
+    
+    oscillator.connect(gainNode);
+    gainNode.connect(audioContext.destination);
+    
+    oscillator.frequency.value = frequency;
+    oscillator.type = 'square';
+    
+    gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
+    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + duration / 1000);
+    
+    oscillator.start(audioContext.currentTime);
+    oscillator.stop(audioContext.currentTime + duration / 1000);
+  };
+
   const [upgrades, setUpgrades] = useState<Upgrade[]>([
     { id: 'click', name: 'REACTOR BOOST', cost: 10, power: 1, owned: 0, icon: 'Zap' },
     { id: 'auto1', name: 'NANO-BOT', cost: 50, power: 1, owned: 0, icon: 'Bot' },
@@ -43,6 +61,7 @@ export default function Index() {
     setEnergy(prev => prev + energyPerClick);
     setTotalEnergy(prev => prev + energyPerClick);
     setClicks(prev => prev + 1);
+    playSound(800, 80);
   };
 
   const buyUpgrade = (upgrade: Upgrade) => {
@@ -63,6 +82,9 @@ export default function Index() {
       } else {
         setEnergyPerSecond(prev => prev + upgrade.power);
       }
+      
+      playSound(1200, 150);
+      setTimeout(() => playSound(1400, 100), 100);
     }
   };
 
