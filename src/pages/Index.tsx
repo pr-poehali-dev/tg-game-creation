@@ -44,12 +44,56 @@ const playSound = (frequency: number, duration: number = 100) => {
   }
 };
 
+let backgroundMusic: { oscillators: OscillatorNode[], gains: GainNode[] } | null = null;
+
+const startBackgroundMusic = () => {
+  try {
+    const ctx = getAudioContext();
+    
+    if (backgroundMusic) return;
+    
+    const createTone = (freq: number, gain: number) => {
+      const osc = ctx.createOscillator();
+      const gainNode = ctx.createGain();
+      
+      osc.type = 'sine';
+      osc.frequency.value = freq;
+      gainNode.gain.value = gain;
+      
+      osc.connect(gainNode);
+      gainNode.connect(ctx.destination);
+      osc.start();
+      
+      return { osc, gainNode };
+    };
+    
+    const bass = createTone(65, 0.03);
+    const pad1 = createTone(130, 0.02);
+    const pad2 = createTone(196, 0.015);
+    
+    backgroundMusic = {
+      oscillators: [bass.osc, pad1.osc, pad2.osc],
+      gains: [bass.gainNode, pad1.gainNode, pad2.gainNode]
+    };
+  } catch (e) {
+    console.warn('Background music failed:', e);
+  }
+};
+
+const stopBackgroundMusic = () => {
+  if (backgroundMusic) {
+    backgroundMusic.oscillators.forEach(osc => osc.stop());
+    backgroundMusic = null;
+  }
+};
+
 export default function Index() {
   const [energy, setEnergy] = useState(0);
   const [totalEnergy, setTotalEnergy] = useState(0);
   const [energyPerClick, setEnergyPerClick] = useState(1);
   const [energyPerSecond, setEnergyPerSecond] = useState(0);
   const [clicks, setClicks] = useState(0);
+  const [musicPlaying, setMusicPlaying] = useState(false);
 
   const [upgrades, setUpgrades] = useState<Upgrade[]>([
     { id: 'click', name: 'REACTOR BOOST', cost: 10, power: 1, owned: 0, icon: 'Zap' },
@@ -71,10 +115,24 @@ export default function Index() {
   }, [energyPerSecond]);
 
   const handleReactorClick = () => {
+    if (!musicPlaying) {
+      startBackgroundMusic();
+      setMusicPlaying(true);
+    }
     setEnergy(prev => prev + energyPerClick);
     setTotalEnergy(prev => prev + energyPerClick);
     setClicks(prev => prev + 1);
     playSound(800, 80);
+  };
+
+  const toggleMusic = () => {
+    if (musicPlaying) {
+      stopBackgroundMusic();
+      setMusicPlaying(false);
+    } else {
+      startBackgroundMusic();
+      setMusicPlaying(true);
+    }
   };
 
   const buyUpgrade = (upgrade: Upgrade) => {
@@ -105,9 +163,19 @@ export default function Index() {
     <div className="min-h-screen bg-background p-4 md:p-8">
       <div className="max-w-6xl mx-auto">
         <div className="text-center mb-8">
-          <h1 className="text-2xl md:text-4xl mb-2 text-primary animate-pulse-glow">
-            SPACE STATION IDLE
-          </h1>
+          <div className="flex items-center justify-center gap-4 mb-2">
+            <h1 className="text-2xl md:text-4xl text-primary animate-pulse-glow">
+              SPACE STATION IDLE
+            </h1>
+            <Button
+              onClick={toggleMusic}
+              size="sm"
+              variant="outline"
+              className="border-primary text-primary hover:bg-primary/20"
+            >
+              <Icon name={musicPlaying ? "Volume2" : "VolumeX"} size={16} />
+            </Button>
+          </div>
           <p className="text-xs md:text-sm text-muted-foreground">
             RESOURCE EXTRACTION FACILITY
           </p>
