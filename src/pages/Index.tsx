@@ -97,15 +97,37 @@ const stopBackgroundMusic = () => {
   }
 };
 
+const loadGameState = () => {
+  try {
+    const saved = localStorage.getItem('spaceStationGame');
+    if (saved) {
+      return JSON.parse(saved);
+    }
+  } catch (e) {
+    console.warn('Failed to load game state:', e);
+  }
+  return null;
+};
+
+const saveGameState = (state: any) => {
+  try {
+    localStorage.setItem('spaceStationGame', JSON.stringify(state));
+  } catch (e) {
+    console.warn('Failed to save game state:', e);
+  }
+};
+
 export default function Index() {
-  const [energy, setEnergy] = useState(0);
-  const [totalEnergy, setTotalEnergy] = useState(0);
-  const [energyPerClick, setEnergyPerClick] = useState(1);
-  const [energyPerSecond, setEnergyPerSecond] = useState(0);
-  const [clicks, setClicks] = useState(0);
+  const savedState = loadGameState();
+  
+  const [energy, setEnergy] = useState(savedState?.energy || 0);
+  const [totalEnergy, setTotalEnergy] = useState(savedState?.totalEnergy || 0);
+  const [energyPerClick, setEnergyPerClick] = useState(savedState?.energyPerClick || 1);
+  const [energyPerSecond, setEnergyPerSecond] = useState(savedState?.energyPerSecond || 0);
+  const [clicks, setClicks] = useState(savedState?.clicks || 0);
   const [musicPlaying, setMusicPlaying] = useState(false);
 
-  const [upgrades, setUpgrades] = useState<Upgrade[]>([
+  const [upgrades, setUpgrades] = useState<Upgrade[]>(savedState?.upgrades || [
     { id: 'click', name: 'REACTOR BOOST', cost: 10, power: 1, owned: 0, icon: 'Zap' },
     { id: 'auto1', name: 'NANO-BOT', cost: 50, power: 1, owned: 0, icon: 'Bot' },
     { id: 'auto2', name: 'SOLAR PANEL', cost: 200, power: 5, owned: 0, icon: 'Sun' },
@@ -123,6 +145,21 @@ export default function Index() {
 
     return () => clearInterval(interval);
   }, [energyPerSecond]);
+
+  useEffect(() => {
+    const saveInterval = setInterval(() => {
+      saveGameState({
+        energy,
+        totalEnergy,
+        energyPerClick,
+        energyPerSecond,
+        clicks,
+        upgrades
+      });
+    }, 2000);
+
+    return () => clearInterval(saveInterval);
+  }, [energy, totalEnergy, energyPerClick, energyPerSecond, clicks, upgrades]);
 
   const handleReactorClick = () => {
     if (!musicPlaying) {
