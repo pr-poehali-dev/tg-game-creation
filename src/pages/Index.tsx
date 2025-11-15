@@ -44,45 +44,55 @@ const playSound = (frequency: number, duration: number = 100) => {
   }
 };
 
-let backgroundMusic: { oscillators: OscillatorNode[], gains: GainNode[] } | null = null;
+let backgroundMusic: { interval: NodeJS.Timeout | null } | null = null;
 
-const startBackgroundMusic = () => {
-  try {
-    const ctx = getAudioContext();
-    
-    if (backgroundMusic) return;
-    
-    const createTone = (freq: number, gain: number) => {
+const playMelodyNote = (freq: number, duration: number, delay: number = 0) => {
+  setTimeout(() => {
+    try {
+      const ctx = getAudioContext();
       const osc = ctx.createOscillator();
-      const gainNode = ctx.createGain();
+      const gain = ctx.createGain();
+      
+      osc.connect(gain);
+      gain.connect(ctx.destination);
       
       osc.type = 'sine';
       osc.frequency.value = freq;
-      gainNode.gain.value = gain;
+      gain.gain.setValueAtTime(0.08, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + duration / 1000);
       
-      osc.connect(gainNode);
-      gainNode.connect(ctx.destination);
-      osc.start();
-      
-      return { osc, gainNode };
+      osc.start(ctx.currentTime);
+      osc.stop(ctx.currentTime + duration / 1000);
+    } catch (e) {
+      console.warn('Note playback failed:', e);
+    }
+  }, delay);
+};
+
+const startBackgroundMusic = () => {
+  try {
+    if (backgroundMusic) return;
+    
+    const melody = [523, 659, 784, 659, 523, 392, 523, 659];
+    let noteIndex = 0;
+    
+    const playLoop = () => {
+      playMelodyNote(melody[noteIndex], 400);
+      noteIndex = (noteIndex + 1) % melody.length;
     };
     
-    const bass = createTone(65, 0.03);
-    const pad1 = createTone(130, 0.02);
-    const pad2 = createTone(196, 0.015);
+    playLoop();
+    const interval = setInterval(playLoop, 500);
     
-    backgroundMusic = {
-      oscillators: [bass.osc, pad1.osc, pad2.osc],
-      gains: [bass.gainNode, pad1.gainNode, pad2.gainNode]
-    };
+    backgroundMusic = { interval };
   } catch (e) {
     console.warn('Background music failed:', e);
   }
 };
 
 const stopBackgroundMusic = () => {
-  if (backgroundMusic) {
-    backgroundMusic.oscillators.forEach(osc => osc.stop());
+  if (backgroundMusic?.interval) {
+    clearInterval(backgroundMusic.interval);
     backgroundMusic = null;
   }
 };
