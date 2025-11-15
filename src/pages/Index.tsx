@@ -207,52 +207,52 @@ export default function Index() {
   };
 
   return (
-    <div className="min-h-screen bg-background p-4 md:p-8">
+    <div className="min-h-screen bg-background p-2 sm:p-4 md:p-8">
       <div className="max-w-6xl mx-auto">
-        <div className="text-center mb-8">
-          <div className="flex items-center justify-center gap-4 mb-2">
-            <h1 className="text-2xl md:text-4xl text-primary animate-pulse-glow">
-              SPACE STATION IDLE
+        <div className="text-center mb-4 sm:mb-6">
+          <div className="flex items-center justify-center gap-2 sm:gap-4 mb-2">
+            <h1 className="text-lg sm:text-2xl md:text-4xl text-primary animate-pulse-glow">
+              SPACE STATION
             </h1>
             <Button
               onClick={toggleMusic}
               size="sm"
               variant="outline"
-              className="border-primary text-primary hover:bg-primary/20"
+              className="border-primary text-primary hover:bg-primary/20 p-2"
             >
-              <Icon name={musicPlaying ? "Volume2" : "VolumeX"} size={16} />
+              <Icon name={musicPlaying ? "Volume2" : "VolumeX"} size={14} />
             </Button>
           </div>
-          <p className="text-xs md:text-sm text-muted-foreground">
-            RESOURCE EXTRACTION FACILITY
+          <p className="text-[10px] sm:text-xs md:text-sm text-muted-foreground">
+            RESOURCE EXTRACTION
           </p>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <div className="lg:col-span-2 space-y-6">
-            <Card className="p-6 border-2 border-primary bg-card">
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center mb-6">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-3 sm:gap-4 md:gap-6">
+          <div className="lg:col-span-2 space-y-3 sm:space-y-4 md:space-y-6">
+            <Card className="p-3 sm:p-4 md:p-6 border-2 border-primary bg-card">
+              <div className="grid grid-cols-4 gap-2 sm:gap-3 md:gap-4 text-center mb-4 sm:mb-6">
                 <div>
-                  <div className="text-xs text-muted-foreground mb-1">ENERGY</div>
-                  <div className="text-lg md:text-xl text-primary">
+                  <div className="text-[8px] sm:text-[10px] md:text-xs text-muted-foreground mb-1">ENERGY</div>
+                  <div className="text-sm sm:text-base md:text-lg text-primary">
                     {Math.floor(energy)}
                   </div>
                 </div>
                 <div>
-                  <div className="text-xs text-muted-foreground mb-1">PER CLICK</div>
-                  <div className="text-lg md:text-xl text-secondary">
+                  <div className="text-[8px] sm:text-[10px] md:text-xs text-muted-foreground mb-1">CLICK</div>
+                  <div className="text-sm sm:text-base md:text-lg text-secondary">
                     +{energyPerClick}
                   </div>
                 </div>
                 <div>
-                  <div className="text-xs text-muted-foreground mb-1">PER SEC</div>
-                  <div className="text-lg md:text-xl text-accent">
+                  <div className="text-[8px] sm:text-[10px] md:text-xs text-muted-foreground mb-1">/SEC</div>
+                  <div className="text-sm sm:text-base md:text-lg text-accent">
                     +{energyPerSecond.toFixed(1)}
                   </div>
                 </div>
                 <div>
-                  <div className="text-xs text-muted-foreground mb-1">TOTAL</div>
-                  <div className="text-lg md:text-xl text-foreground">
+                  <div className="text-[8px] sm:text-[10px] md:text-xs text-muted-foreground mb-1">TOTAL</div>
+                  <div className="text-sm sm:text-base md:text-lg text-foreground">
                     {Math.floor(totalEnergy)}
                   </div>
                 </div>
@@ -261,40 +261,40 @@ export default function Index() {
               <div className="flex justify-center">
                 <Button
                   onClick={handleReactorClick}
-                  className="relative w-48 h-48 md:w-64 md:h-64 rounded-none border-4 border-primary bg-primary/20 hover:bg-primary/30 transition-all active:scale-95 animate-pulse-glow"
+                  className="relative w-40 h-40 sm:w-48 sm:h-48 md:w-64 md:h-64 rounded-none border-4 border-primary bg-primary/20 hover:bg-primary/30 transition-all active:scale-95 animate-pulse-glow"
                   style={{ 
                     boxShadow: '0 0 20px hsl(var(--primary)), inset 0 0 20px hsl(var(--primary))'
                   }}
                 >
                   <div className="absolute inset-0 flex flex-col items-center justify-center">
-                    <Icon name="Atom" size={64} className="text-primary animate-float mb-4" />
-                    <div className="text-xs md:text-sm pixel-text text-primary">
+                    <Icon name="Atom" size={48} className="text-primary animate-float mb-2 sm:mb-4" />
+                    <div className="text-[10px] sm:text-xs md:text-sm pixel-text text-primary">
                       REACTOR
                     </div>
-                    <div className="text-[10px] text-primary/70 mt-2 animate-blink">
-                      ▲ CLICK ▲
+                    <div className="text-[8px] sm:text-[10px] text-primary/70 mt-1 sm:mt-2 animate-blink">
+                      ▲ TAP ▲
                     </div>
                   </div>
                 </Button>
               </div>
 
-              <div className="mt-6 space-y-2">
-                <div className="flex justify-between text-xs">
-                  <span className="text-muted-foreground">REACTOR STATUS</span>
+              <div className="mt-4 sm:mt-6 space-y-2">
+                <div className="flex justify-between text-[10px] sm:text-xs">
+                  <span className="text-muted-foreground">STATUS</span>
                   <span className="text-secondary">ONLINE</span>
                 </div>
-                <Progress value={(clicks % 100)} className="h-2" />
-                <div className="flex justify-between text-xs">
+                <Progress value={(clicks % 100)} className="h-1.5 sm:h-2" />
+                <div className="flex justify-between text-[10px] sm:text-xs">
                   <span className="text-muted-foreground">EFFICIENCY</span>
                   <span className="text-accent">{Math.min(100, clicks % 100)}%</span>
                 </div>
               </div>
             </Card>
 
-            <Card className="p-6 border-2 border-primary bg-card">
+            <Card className="p-3 sm:p-4 md:p-6 border-2 border-primary bg-card hidden sm:block">
               <div className="flex items-center gap-2 mb-4">
-                <Icon name="Activity" size={20} className="text-primary" />
-                <h2 className="text-lg md:text-xl text-primary">STATION LOG</h2>
+                <Icon name="Activity" size={16} className="text-primary" />
+                <h2 className="text-sm md:text-lg text-primary">STATION LOG</h2>
               </div>
               <div className="space-y-2 text-xs font-mono max-h-32 overflow-y-auto">
                 <div className="text-muted-foreground">
@@ -317,14 +317,14 @@ export default function Index() {
             </Card>
           </div>
 
-          <div className="space-y-4">
-            <Card className="p-4 border-2 border-secondary bg-card">
-              <div className="flex items-center gap-2 mb-4">
-                <Icon name="Wrench" size={20} className="text-secondary" />
-                <h2 className="text-lg md:text-xl text-secondary">UPGRADES</h2>
+          <div className="space-y-3 sm:space-y-4">
+            <Card className="p-3 sm:p-4 border-2 border-secondary bg-card">
+              <div className="flex items-center gap-2 mb-3 sm:mb-4">
+                <Icon name="Wrench" size={16} className="text-secondary" />
+                <h2 className="text-sm sm:text-base md:text-lg text-secondary">UPGRADES</h2>
               </div>
 
-              <div className="space-y-3">
+              <div className="space-y-2 sm:space-y-3">
                 {upgrades.map((upgrade) => {
                   const canBuy = energy >= upgrade.cost;
                   
@@ -333,28 +333,28 @@ export default function Index() {
                       key={upgrade.id}
                       onClick={() => buyUpgrade(upgrade)}
                       disabled={!canBuy}
-                      className={`w-full p-4 h-auto flex flex-col items-start gap-2 border-2 rounded-none ${
+                      className={`w-full p-2.5 sm:p-3 md:p-4 h-auto flex flex-col items-start gap-1.5 sm:gap-2 border-2 rounded-none ${
                         canBuy 
                           ? 'border-secondary bg-secondary/20 hover:bg-secondary/30 text-secondary' 
                           : 'border-muted bg-muted/10 text-muted-foreground opacity-50'
                       }`}
                     >
                       <div className="flex items-center justify-between w-full">
-                        <div className="flex items-center gap-2">
-                          <Icon name={upgrade.icon as any} size={16} />
-                          <span className="text-xs font-bold">{upgrade.name}</span>
+                        <div className="flex items-center gap-1.5 sm:gap-2">
+                          <Icon name={upgrade.icon as any} size={14} />
+                          <span className="text-[10px] sm:text-xs font-bold">{upgrade.name}</span>
                         </div>
-                        <span className="text-xs bg-background px-2 py-1 border border-current">
+                        <span className="text-[10px] sm:text-xs bg-background px-1.5 sm:px-2 py-0.5 sm:py-1 border border-current">
                           {upgrade.owned}
                         </span>
                       </div>
                       
-                      <div className="flex items-center justify-between w-full text-[10px]">
+                      <div className="flex items-center justify-between w-full text-[8px] sm:text-[10px]">
                         <span>
-                          {upgrade.id === 'click' ? `+${upgrade.power}/click` : `+${upgrade.power}/s`}
+                          {upgrade.id === 'click' ? `+${upgrade.power}/tap` : `+${upgrade.power}/s`}
                         </span>
-                        <span className="flex items-center gap-1">
-                          <Icon name="Zap" size={10} />
+                        <span className="flex items-center gap-0.5 sm:gap-1">
+                          <Icon name="Zap" size={8} />
                           {upgrade.cost}
                         </span>
                       </div>
@@ -364,14 +364,14 @@ export default function Index() {
               </div>
             </Card>
 
-            <Card className="p-4 border-2 border-accent bg-card">
-              <div className="flex items-center gap-2 mb-3">
-                <Icon name="Trophy" size={16} className="text-accent" />
-                <h3 className="text-sm text-accent">STATS</h3>
+            <Card className="p-3 sm:p-4 border-2 border-accent bg-card">
+              <div className="flex items-center gap-1.5 sm:gap-2 mb-2 sm:mb-3">
+                <Icon name="Trophy" size={14} className="text-accent" />
+                <h3 className="text-xs sm:text-sm text-accent">STATS</h3>
               </div>
-              <div className="space-y-2 text-[10px]">
+              <div className="space-y-1.5 sm:space-y-2 text-[9px] sm:text-[10px]">
                 <div className="flex justify-between">
-                  <span className="text-muted-foreground">TOTAL CLICKS:</span>
+                  <span className="text-muted-foreground">TAPS:</span>
                   <span className="text-foreground">{clicks}</span>
                 </div>
                 <div className="flex justify-between">
